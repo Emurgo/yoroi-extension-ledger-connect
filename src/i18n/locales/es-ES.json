@@ -2,7 +2,7 @@
   "suspence.fallbackText": "Cargando...",
   "footer.version": "Versión:",
   "footer.transportId": "Transporte:",
-  "webauthn.note": "No presione el botón <strong>Cancelar</strong>",
+  "webauthn.note": "No presiones el botón <strong>Cancelar</strong>",
   "title.connect": "Conecte a la billetera de hardware Ledger",
   "title.sendTx": "Confirmar transacción usando Ledger",
   "title.verifyAddress": "Verifique la dirección en su Ledger",
