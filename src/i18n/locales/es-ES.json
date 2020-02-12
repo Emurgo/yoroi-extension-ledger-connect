@@ -36,6 +36,6 @@
   "hint.nanoX.sendTx.confirmTx": "Confirma la transacción, presionando <strong>ambos</strong> botones.",
   "hint.verifyAddress.info": "Verifica la pantalla de tu Ledger, y luego presiona <strong>ambos</strong> botones.",
   "hint.verifyAddress.path": "Asegúrate de que la ruta de la dirección que se muestra en tu Ledger es la misma que se muestra a continuación. Luego presiona <strong>ambos</strong> botones.",
-  "hint.verifyAddress.address": "Asegúrese de que la dirección que se muestra en su Ledger es la misma que se muestra a continuación, luego presione <strong>ambos</strong> botones.",
-  "hint.nanoX.verifyAddress.address": "Asegúrese de que la dirección que se muestra en su Ledger es la misma que se muestra a continuación. Presione el botón <strong>derecho</strong> en su Ledger para desplazarse hasta el final de la dirección, luego presione <strong>ambos</strong> botones."
+  "hint.verifyAddress.address": "Asegúrate de que la dirección que se muestra en tu Ledger es la misma que se muestra a continuación. Luego presiona <strong>ambos</strong> botones.",
+  "hint.nanoX.verifyAddress.address": "Asegúrate de que la dirección que se muestra en tu Ledger es la misma que se muestra a continuación. Presione el botón <strong>derecho</strong> de tu Ledger para desplazarte hasta el final de la dirección, y luego presiona <strong>ambos</strong> botones."
 }
