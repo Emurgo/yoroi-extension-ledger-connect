@@ -37,5 +37,5 @@
   "hint.verifyAddress.info": "检查您的Ledger屏幕，然后同时按下 <strong>两个</strong> 按键。",
   "hint.verifyAddress.path": "确认Ledger上显示的路径和下面显示的路径相同，然后同时按下 <strong>两个</strong> 按键。",
   "hint.verifyAddress.address": "确认Ledger上显示的地址和下面显示的地址相同，然后同时按下 <strong>两个</strong> 按键。",
-  "hint.nanoX.verifyAddress.address": "Make sure the address shown on your Ledger is the same as the one shown below. Press the <strong>right</strong> button on your Ledger to scroll to the end of the address, then press <strong>both</strong> buttons."
+  "hint.nanoX.verifyAddress.address": "确认Ledger上显示的地址和下面显示的地址相同。按 <strong>向右</strong> 按键滚动到地址的末尾，然后同时按下 <strong>两个</strong> 按键。"
 }
