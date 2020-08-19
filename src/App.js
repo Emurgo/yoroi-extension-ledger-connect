@@ -72,7 +72,10 @@ export default class App extends React.Component<Props> {
 
     const component = (
       <IntlProvider {...{ locale, key: locale, messages: mergedMessages }}>
-        {loadingSpinner}
+        <Suspense fallback={loadingSpinner}>
+          <StyleVariableLoader variables={styleVariables} />
+          <ConnectPage rootStore={this.props.rootStore} />
+        </Suspense>
       </IntlProvider>
     );
 
