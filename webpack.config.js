@@ -60,6 +60,9 @@ module.exports = (env) => {
       {
         test: /\.(eot|otf|ttf|woff|woff2|gif|png)$/,
         loader: 'file-loader',
+        options: {
+          esModule: false,
+        },
       },
       {
         test: /\.svg$/,
