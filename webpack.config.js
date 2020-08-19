@@ -45,7 +45,6 @@ module.exports = (env) => {
             loader: 'css-loader',
             options: {
               importLoaders: 1,
-              sourceMap: true,
               modules: {
                 mode: 'local',
                 localIdentName: '[name]_[local]',
@@ -54,9 +53,6 @@ module.exports = (env) => {
           },
           {
             loader: 'sass-loader',
-            options: {
-              sourceMap: true,
-            }
           }
         ]
       },
@@ -67,11 +63,7 @@ module.exports = (env) => {
       {
         test: /\.svg$/,
         use: ['@svgr/webpack', 'url-loader'],
-      }
-      // {
-      //   test: /\.svg$/,
-      //   loader: 'svg-inline-loader?removeSVGTagAttrs=false&removeTags=true&removingTags[]=title&removingTags[]=desc&idPrefix=[sha512:hash:hex:5]-',
-      // },
+      },
     ]
   };
 
