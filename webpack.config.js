@@ -45,6 +45,7 @@ module.exports = (env) => {
             loader: 'css-loader',
             options: {
               importLoaders: 1,
+              esModule: false,
               modules: {
                 mode: 'local',
                 localIdentName: '[name]_[local]',
