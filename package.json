@@ -55,12 +55,12 @@
     "@ledgerhq/hw-transport-webusb": "4.72.2",
     "babel-polyfill": "6.26.0",
     "es6-error": "4.1.1",
-    "lodash": "4.17.15",
-    "mobx": "5.13.0",
-    "mobx-react": "6.1.3",
+    "lodash": "4.17.20",
+    "mobx": "5.15.6",
+    "mobx-react": "6.2.5",
     "prop-types": "15.7.2",
-    "react": "16.10.2",
-    "react-dom": "16.10.2",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
     "react-intl": "2.9.0"
   },
   "repository": {
