@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 
 import type {
   VerifyAddressInfoType,
+  DeriveAddressInfoType,
 } from '../../types/cmn';
 import type {
   DeviceCodeType,
@@ -32,6 +33,7 @@ type Props = {|
   deviceCode: DeviceCodeType,
   setDeviceCode: setDeviceCodeFunc,
   verifyAddressInfo: VerifyAddressInfoType,
+  deriveAddressInfo: DeriveAddressInfoType,
   wasDeviceLocked: boolean,
 |};
 
@@ -50,6 +52,7 @@ export default class ConnectBlock extends React.Component<Props> {
       setDeviceCode,
       deviceCode,
       verifyAddressInfo,
+      deriveAddressInfo,
       wasDeviceLocked
     } = this.props;
 
@@ -83,6 +86,7 @@ export default class ConnectBlock extends React.Component<Props> {
             currentOperationName={currentOperationName}
             progressState={progressState}
             verifyAddressInfo={verifyAddressInfo}
+            deriveAddressInfo={deriveAddressInfo}
             wasDeviceLocked={wasDeviceLocked}
           />
         );

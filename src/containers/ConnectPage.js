@@ -25,6 +25,7 @@ export default class ConnectPage extends React.Component<Props> {
       executeAction,
       deviceCode,
       verifyAddressInfo,
+      deriveAddressInfo,
       wasDeviceLocked,
       setTransport,
       setDeviceCode,
@@ -54,6 +55,7 @@ export default class ConnectPage extends React.Component<Props> {
           deviceCode={deviceCode}
           setDeviceCode={setDeviceCode}
           verifyAddressInfo={verifyAddressInfo}
+          deriveAddressInfo={deriveAddressInfo}
           wasDeviceLocked={wasDeviceLocked}
         />
       </Layout>

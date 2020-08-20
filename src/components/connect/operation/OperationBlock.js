@@ -5,6 +5,7 @@ import { intlShape, defineMessages } from 'react-intl';
 
 import type {
   VerifyAddressInfoType,
+  DeriveAddressInfoType,
 }  from '../../../types/cmn';
 import type {
   DeviceCodeType,
@@ -20,6 +21,7 @@ import CommonHintBlock from './common/CommonHintBlock';
 import ConnectLedgerHintBlock from './connect/ConnectLedgerHintBlock';
 import SendTxHintBlock from './send/SendTxHintBlock';
 import VerifyAddressHintBlock from './verify/VerifyAddressHintBlock';
+import DeriveAddressHintBlock from './derive/DeriveAddressHintBlock';
 
 import styles from './OperationBlock.scss';
 
@@ -35,6 +37,7 @@ type Props = {|
   currentOperationName: OperationNameType,
   progressState: ProgressStateType,
   verifyAddressInfo: VerifyAddressInfoType,
+  deriveAddressInfo: DeriveAddressInfoType,
   wasDeviceLocked: boolean,
   showPerformActionText?: boolean,
 |};
@@ -53,6 +56,7 @@ export default class OperationBlock extends React.Component<Props> {
       currentOperationName,
       progressState,
       verifyAddressInfo,
+      deriveAddressInfo,
       wasDeviceLocked,
       showPerformActionText,
     } = this.props;
@@ -100,6 +104,15 @@ export default class OperationBlock extends React.Component<Props> {
               />
             );
             break;
+          case OPERATION_NAME.DERIVE_ADDRESS:
+            content = (
+              <DeriveAddressHintBlock
+                deviceCode={deviceCode}
+                deriveAddressInfo={deriveAddressInfo}
+                wasDeviceLocked={wasDeviceLocked}
+              />
+            );
+            break;
           default:
             console.error(`[YLC] Unexpected operation: ${currentOperationName}`);
             return (null);
@@ -110,7 +123,7 @@ export default class OperationBlock extends React.Component<Props> {
         return (null);
     }
 
-    // By default performActionText block is hidded
+    // By default performActionText block is hidden
     let performActionText;
     if (showPerformActionText) {
       performActionText = (

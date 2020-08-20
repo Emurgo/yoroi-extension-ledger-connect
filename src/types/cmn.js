@@ -25,3 +25,7 @@ export type VerifyAddressInfoType = {
   hdPath: string,
   address: string,
 }
+
+export type DeriveAddressInfoType = {
+  hdPath: string,
+}

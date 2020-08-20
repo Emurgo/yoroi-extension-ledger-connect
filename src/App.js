@@ -57,11 +57,10 @@ export default class App extends React.Component<Props> {
     // Merged english messages with selected by user locale messages
     // In this case all english data would be overridden to user selected locale, but untranslated
     // (missed in object keys) just stay in english
-    const mergedMessages = Object.assign(
-      {},
-      translations[DEFAULT_LOCALE],
-      translations[locale]
-    );
+    const mergedMessages = {
+      ...translations[DEFAULT_LOCALE],
+      ...translations[locale]
+    };
 
     const loadingSpinner = (
       <LoadingSpinner

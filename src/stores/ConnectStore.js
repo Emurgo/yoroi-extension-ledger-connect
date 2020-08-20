@@ -5,17 +5,23 @@ import type {
   BIP32Path,
   InputTypeUTxO,
   OutputTypeAddress,
-  OutputTypeChange,
+  OutputTypeAddressParams,
+  StakingBlockchainPointer,
+  Certificate,
+  Withdrawal,
+  Flags,
   GetVersionResponse,
+  GetSerialResponse,
+  DeriveAddressResponse,
   GetExtendedPublicKeyResponse,
   SignTransactionResponse,
-  DeriveAddressResponse
 } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 
 import type {
   MessageType,
   RequestType,
   VerifyAddressInfoType,
+  DeriveAddressInfoType,
 } from '../types/cmn';
 import type {
   DeviceCodeType,
@@ -44,7 +50,7 @@ import {
   getKnownDeviceCode,
 } from '../utils/storage';
 
-export type ExtenedPublicKeyResp = {
+export type ExtendedPublicKeyResp = {
   ePublicKey: GetExtendedPublicKeyResponse,
   deviceVersion: GetVersionResponse
 };
@@ -54,6 +60,7 @@ export default class ConnectStore {
   @observable progressState: ProgressStateType;
   @observable currentOperationName: OperationNameType;
   @observable verifyAddressInfo: VerifyAddressInfoType;
+  @observable deriveAddressInfo: DeriveAddressInfoType;
   @observable deviceCode: DeviceCodeType
   @observable wasDeviceLocked: boolean;
   userInteractableRequest: RequestType;
@@ -109,6 +116,11 @@ export default class ConnectStore {
     this.verifyAddressInfo = verifyAddressInfo;
   }
 
+  @action('Change Derive Address Info')
+  setDeriveAddressInfo = (deriveAddressInfo: DeriveAddressInfoType): void => {
+    this.deriveAddressInfo = deriveAddressInfo;
+  }
+
   _detectLedgerDevice = async (transport: any): Promise<GetVersionResponse> => {
 
     setTimeout(() => {
@@ -151,17 +163,48 @@ export default class ConnectStore {
       case OPERATION_NAME.GET_LEDGER_VERSION:
         this.getVersion(actn);
         break;
+      case OPERATION_NAME.GET_SERIAL:
+        this.getSerial(actn);
+        break;
       case OPERATION_NAME.GET_EXTENDED_PUBLIC_KEY:
         this.getExtendedPublicKey(actn, params.hdPath);
         break;
       case OPERATION_NAME.SIGN_TX:
-        this.signTransaction(actn, params.inputs, params.outputs);
+        this.signTransaction(
+          actn,
+          params.networkId,
+          params.protocolMagic,
+          params.inputs,
+          params.outputs,
+          params.feeStr,
+          params.ttlStr,
+          params.certificates,
+          params.withdrawals,
+          params.metadataHashHex,
+        );
         break;
       case OPERATION_NAME.SHOW_ADDRESS:
-        this.showAddress(actn, params.hdPath, params.address);
+        this.showAddress(
+          actn,
+          params.address,
+          params.addressTypeNibble,
+          params.networkIdOrProtocolMagic,
+          params.spendingPath,
+          params.stakingPath,
+          params.stakingKeyHashHex,
+          params.stakingBlockchainPointer,
+        );
         break;
       case OPERATION_NAME.DERIVE_ADDRESS:
-        this.deriveAddress(actn, params.hdPath);
+        this.deriveAddress(
+          actn,
+          params.addressTypeNibble,
+          params.networkIdOrProtocolMagic,
+          params.spendingPath,
+          params.stakingPath,
+          params.stakingKeyHashHex,
+          params.stakingBlockchainPointer,
+        );
         break;
       default:
         throw new Error(`[YLC] Unexpected action called: ${actn}`);
@@ -196,8 +239,15 @@ export default class ConnectStore {
 
   signTransaction = async (
     actn: OperationNameType,
+    networkId: number,
+    protocolMagic: number,
     inputs: Array<InputTypeUTxO>,
-    outputs: Array<OutputTypeAddress | OutputTypeChange>
+    outputs: Array<OutputTypeAddress | OutputTypeAddressParams>,
+    feeStr: string,
+    ttlStr: string,
+    certificates: Array<Certificate>,
+    withdrawals: Array<Withdrawal>,
+    metadataHashHex: ?string
   ): Promise<void> => {
     let transport;
     try {
@@ -205,7 +255,17 @@ export default class ConnectStore {
       await this._detectLedgerDevice(transport);
 
       const adaApp = new AdaApp(transport);
-      const resp: SignTransactionResponse = await adaApp.signTransaction(inputs, outputs);
+      const resp: SignTransactionResponse = await adaApp.signTransaction(
+        networkId,
+        protocolMagic,
+        inputs,
+        outputs,
+        feeStr,
+        ttlStr,
+        certificates,
+        withdrawals,
+        metadataHashHex,
+      );
 
       this._replyMessageWrap(actn, true, resp);
     } catch (err) {
@@ -217,21 +277,33 @@ export default class ConnectStore {
 
   showAddress = async (
     actn: OperationNameType,
-    hdPath: BIP32Path,
-    address: string
+    address: string,
+    addressTypeNibble: number,
+    networkIdOrProtocolMagic: number,
+    spendingPath: BIP32Path,
+    stakingPath: ?BIP32Path = null,
+    stakingKeyHashHex: ?string = null,
+    stakingBlockchainPointer: ?StakingBlockchainPointer = null
   ): Promise<void> => {
     let transport;
     try {
       this.setVerifyAddressInfo({
         address,
-        hdPath: pathToString(hdPath)
+        hdPath: pathToString(spendingPath)
       });
 
       transport = await makeTransport(this.transportId);
       await this._detectLedgerDevice(transport);
 
       const adaApp = new AdaApp(transport);
-      const resp = await adaApp.showAddress(hdPath);
+      const resp = await adaApp.showAddress(
+        addressTypeNibble,
+        networkIdOrProtocolMagic,
+        spendingPath,
+        stakingPath,
+        stakingKeyHashHex,
+        stakingBlockchainPointer,
+      );
 
       this._replyMessageWrap(actn, true, resp);
     } catch (err) {
@@ -241,14 +313,33 @@ export default class ConnectStore {
     }
   };
 
-  deriveAddress = async (actn: OperationNameType, hdPath: BIP32Path): Promise<void> => {
+  deriveAddress = async (
+    actn: OperationNameType,
+    addressTypeNibble: number,
+    networkIdOrProtocolMagic: number,
+    spendingPath: BIP32Path,
+    stakingPath: ?BIP32Path = null,
+    stakingKeyHashHex: ?string = null,
+    stakingBlockchainPointer: ?StakingBlockchainPointer = null
+  ): Promise<void> => {
     let transport;
     try {
+      this.setDeriveAddressInfo({
+        hdPath: pathToString(spendingPath)
+      });
+
       transport = await makeTransport(this.transportId);
       await this._detectLedgerDevice(transport);
 
       const adaApp = new AdaApp(transport);
-      const resp: DeriveAddressResponse = await adaApp.deriveAddress(hdPath);
+      const resp: DeriveAddressResponse = await adaApp.deriveAddress(
+        addressTypeNibble,
+        networkIdOrProtocolMagic,
+        spendingPath,
+        stakingPath,
+        stakingKeyHashHex,
+        stakingBlockchainPointer,
+      );
 
       this._replyMessageWrap(actn, true, resp);
     } catch (err) {
@@ -274,6 +365,22 @@ export default class ConnectStore {
     }
   };
 
+  getSerial = async (actn: OperationNameType): Promise<void> => {
+    let transport;
+    try {
+      transport = await makeTransport(this.transportId);
+
+      const adaApp = new AdaApp(transport);
+      const resp: GetSerialResponse = await adaApp.getSerial();
+
+      this._replyMessageWrap(actn, true, resp);
+    } catch (err) {
+      this._replyError(actn, err);
+    } finally {
+      transport && transport.close();
+    }
+  };
+
   // #==============================================#
   //  Website <==> Content Script communications
   // #==============================================#
@@ -285,7 +392,6 @@ export default class ConnectStore {
   _onMessage = (req: any): void => {
     const { data } = req;
     if (data &&
-      data.params &&
       data.action &&
       data.target === YOROI_LEDGER_CONNECT_TARGET_NAME) {
 
@@ -296,6 +402,7 @@ export default class ConnectStore {
 
       switch (actn) {
         case OPERATION_NAME.GET_LEDGER_VERSION:
+        case OPERATION_NAME.GET_SERIAL:
         case OPERATION_NAME.GET_EXTENDED_PUBLIC_KEY:
         case OPERATION_NAME.SIGN_TX:
         case OPERATION_NAME.SHOW_ADDRESS:
