@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 
 import type {
   VerifyAddressInfoType,
-  DeriveAddressInfoType,
+  DeriveAddressRequest,
 } from '../../types/cmn';
 import type {
   DeviceCodeType,
@@ -33,7 +33,7 @@ type Props = {|
   deviceCode: DeviceCodeType,
   setDeviceCode: setDeviceCodeFunc,
   verifyAddressInfo: VerifyAddressInfoType,
-  deriveAddressInfo: DeriveAddressInfoType,
+  deriveAddressInfo: DeriveAddressRequest,
   wasDeviceLocked: boolean,
 |};
 

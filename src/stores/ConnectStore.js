@@ -9,7 +9,6 @@ import type {
   StakingBlockchainPointer,
   Certificate,
   Withdrawal,
-  Flags,
   GetVersionResponse,
   GetSerialResponse,
   DeriveAddressResponse,
@@ -21,7 +20,7 @@ import type {
   MessageType,
   RequestType,
   VerifyAddressInfoType,
-  DeriveAddressInfoType,
+  DeriveAddressRequest,
 } from '../types/cmn';
 import type {
   DeviceCodeType,
@@ -39,7 +38,6 @@ import {
   DEVICE_LOCK_CHECK_TIMEOUT_MS
 } from '../const';
 import {
-  pathToString,
   ledgerErrToMessage,
   makeTransport,
   convertStringToDeviceCodeType,
@@ -60,7 +58,7 @@ export default class ConnectStore {
   @observable progressState: ProgressStateType;
   @observable currentOperationName: OperationNameType;
   @observable verifyAddressInfo: VerifyAddressInfoType;
-  @observable deriveAddressInfo: DeriveAddressInfoType;
+  @observable deriveAddressInfo: DeriveAddressRequest;
   @observable deviceCode: DeviceCodeType
   @observable wasDeviceLocked: boolean;
   userInteractableRequest: RequestType;
@@ -117,7 +115,7 @@ export default class ConnectStore {
   }
 
   @action('Change Derive Address Info')
-  setDeriveAddressInfo = (deriveAddressInfo: DeriveAddressInfoType): void => {
+  setDeriveAddressInfo = (deriveAddressInfo: DeriveAddressRequest): void => {
     this.deriveAddressInfo = deriveAddressInfo;
   }
 
@@ -184,27 +182,16 @@ export default class ConnectStore {
         );
         break;
       case OPERATION_NAME.SHOW_ADDRESS:
-        this.showAddress(
+        this.showAddress({
           actn,
-          params.address,
-          params.addressTypeNibble,
-          params.networkIdOrProtocolMagic,
-          params.spendingPath,
-          params.stakingPath,
-          params.stakingKeyHashHex,
-          params.stakingBlockchainPointer,
-        );
+          params,
+        });
         break;
       case OPERATION_NAME.DERIVE_ADDRESS:
-        this.deriveAddress(
+        this.deriveAddress({
           actn,
-          params.addressTypeNibble,
-          params.networkIdOrProtocolMagic,
-          params.spendingPath,
-          params.stakingPath,
-          params.stakingKeyHashHex,
-          params.stakingBlockchainPointer,
-        );
+          params,
+        });
         break;
       default:
         throw new Error(`[YLC] Unexpected action called: ${actn}`);
@@ -275,75 +262,59 @@ export default class ConnectStore {
     }
   };
 
-  showAddress = async (
+  showAddress: {|
     actn: OperationNameType,
-    address: string,
-    addressTypeNibble: number,
-    networkIdOrProtocolMagic: number,
-    spendingPath: BIP32Path,
-    stakingPath: ?BIP32Path = null,
-    stakingKeyHashHex: ?string = null,
-    stakingBlockchainPointer: ?StakingBlockchainPointer = null
-  ): Promise<void> => {
+    params: VerifyAddressInfoType,
+  |} => Promise<void> = async (request) => {
     let transport;
     try {
-      this.setVerifyAddressInfo({
-        address,
-        hdPath: pathToString(spendingPath)
-      });
+      this.setVerifyAddressInfo(request.params);
 
       transport = await makeTransport(this.transportId);
       await this._detectLedgerDevice(transport);
 
       const adaApp = new AdaApp(transport);
       const resp = await adaApp.showAddress(
-        addressTypeNibble,
-        networkIdOrProtocolMagic,
-        spendingPath,
-        stakingPath,
-        stakingKeyHashHex,
-        stakingBlockchainPointer,
+        request.params.addressTypeNibble,
+        request.params.networkIdOrProtocolMagic,
+        request.params.spendingPath,
+        request.params.stakingPath,
+        request.params.stakingKeyHashHex,
+        request.params.stakingBlockchainPointer,
       );
 
-      this._replyMessageWrap(actn, true, resp);
+      this._replyMessageWrap(request.actn, true, resp);
     } catch (err) {
-      this._replyError(actn, err);
+      this._replyError(request.actn, err);
     } finally {
       transport && transport.close();
     }
   };
 
-  deriveAddress = async (
+  deriveAddress: {|
     actn: OperationNameType,
-    addressTypeNibble: number,
-    networkIdOrProtocolMagic: number,
-    spendingPath: BIP32Path,
-    stakingPath: ?BIP32Path = null,
-    stakingKeyHashHex: ?string = null,
-    stakingBlockchainPointer: ?StakingBlockchainPointer = null
-  ): Promise<void> => {
+    params: DeriveAddressRequest,
+  |} => Promise<void> = async (request) => {
     let transport;
     try {
-      this.setDeriveAddressInfo({
-        hdPath: pathToString(spendingPath)
-      });
+      this.setDeriveAddressInfo(request.params);
 
       transport = await makeTransport(this.transportId);
       await this._detectLedgerDevice(transport);
 
       const adaApp = new AdaApp(transport);
       const resp: DeriveAddressResponse = await adaApp.deriveAddress(
-        addressTypeNibble,
-        networkIdOrProtocolMagic,
-        spendingPath,
-        stakingPath,
-        stakingKeyHashHex,
-        stakingBlockchainPointer,
+        request.params.addressTypeNibble,
+        request.params.networkIdOrProtocolMagic,
+        request.params.spendingPath,
+        request.params.stakingPath,
+        request.params.stakingKeyHashHex,
+        request.params.stakingBlockchainPointer,
       );
 
-      this._replyMessageWrap(actn, true, resp);
+      this._replyMessageWrap(request.actn, true, resp);
     } catch (err) {
-      this._replyError(actn, err);
+      this._replyError(request.actn, err);
     } finally {
       transport && transport.close();
     }

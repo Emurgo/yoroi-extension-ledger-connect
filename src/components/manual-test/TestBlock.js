@@ -94,18 +94,18 @@ export default class TestBlock extends React.Component<Props, State> {
       <div className={styles.transportSelection}>
         {Object.keys(TRANSPORT_ID).map(key => {
           if (Object.prototype.hasOwnProperty.call(TRANSPORT_ID, key)) {
-            const tranportId = TRANSPORT_ID[key];
+            const transportId = TRANSPORT_ID[key];
             return (
-              <span key={tranportId}>
+              <span key={transportId}>
                 <input
-                  key={tranportId}
+                  key={transportId}
                   type="radio"
                   name="transport"
-                  id={tranportId}
-                  checked={this.props.currentTransportId === tranportId}
-                  onChange={this.onTransportSelectionChange.bind(this, tranportId)}
+                  id={transportId}
+                  checked={this.props.currentTransportId === transportId}
+                  onChange={this.onTransportSelectionChange.bind(this, transportId)}
                 />
-                <label className={styles.tranportLabel} htmlFor={tranportId}>{tranportId}</label>
+                <label className={styles.tranportLabel} htmlFor={transportId}>{transportId}</label>
               </span>
             );
           }
@@ -120,13 +120,25 @@ export default class TestBlock extends React.Component<Props, State> {
           <button type="button" onClick={this.onExtendedByronPublicKey}>Extended Byron key</button>
           <button type="button" onClick={this.onExtendedShelleyPublicKey}>Extended Shelley key</button>
         </div>
-        <button type="button" onClick={this.onSignTransaction}>Sign Transaction</button>
+        <button type="button" onClick={this.onSignTransaction}>Sign transaction</button>
         <div>
-          <button type="button" onClick={this.onShowAddress}>Verify Address</button>
+          <button type="button" onClick={this.onShowByronAddress}>Verify Byron address</button>
+          <button type="button" onClick={this.onShowBasePathAddress}>Verify base path address</button>
+          <button type="button" onClick={this.onShowBaseHexAddress}>Verify base hex address</button>
+          <button type="button" onClick={this.onShowPointerAddress}>Verify pointer address</button>
+          <button type="button" onClick={this.onShowEnterpriseAddress}>Verify enterprise address</button>
+          <button type="button" onClick={this.onShowRewardAddress}>Verify reward address</button>
         </div>
-        <button type="button" onClick={this.onDeriveAddress}>Derive Address</button>
-        <button type="button" onClick={this.onLogVersion}>Device Version</button>
-        <button type="button" onClick={this.onLogSerial}>Serial Number</button>
+        <div>
+          <button type="button" onClick={this.onDeriveByronAddress}>Derive Byron address</button>
+          <button type="button" onClick={this.onDeriveBasePathAddress}>Derive base path address</button>
+          <button type="button" onClick={this.onDeriveBaseHexAddress}>Derive base hex address</button>
+          <button type="button" onClick={this.onDerivePointerAddress}>Derive pointer address</button>
+          <button type="button" onClick={this.onDeriveEnterpriseAddress}>Derive enterprise address</button>
+          <button type="button" onClick={this.onDeriveRewardAddress}>Derive reward address</button>
+        </div>
+        <button type="button" onClick={this.onLogVersion}>Device version</button>
+        <button type="button" onClick={this.onLogSerial}>Serial number</button>
       </div>
     );
 
@@ -276,38 +288,123 @@ export default class TestBlock extends React.Component<Props, State> {
   /**
    * Test showAddress = Verify Address
    */
-  onShowAddress = (): void => {
+  onShowByronAddress = (): void => {
     if (this.state.visible === `${styles.visible}`) {
       const req = this.makeRequest(
         OPERATION_NAME.SHOW_ADDRESS,
         {
           address: 'Ae2tdPwUPEZ46CWnexxkBpEM4Y1Y2QQxz8zDE9TtFK6PjM7xsizBAPShHVV',
-          addressTypeNibble: AddressTypeNibbles.BASE,
-          networkIdOrProtocolMagic: MainnetIds.chainNetworkId,
-          spendingPath: cardano.str_to_path("1852'/1815'/0'/0/0"),
-          stakingPath: cardano.str_to_path("1852'/1815'/0'/2/0"),
+          addressTypeNibble: AddressTypeNibbles.BYRON,
+          networkIdOrProtocolMagic: MainnetIds.protocolMagic,
+          spendingPath: cardano.str_to_path("44'/1815'/0'/0/0"),
+          stakingPath: null,
           stakingKeyHashHex: null,
           stakingBlockchainPointer: null,
         }
-        // {
-        //   address: 'Ae2tdPwUPEZ46CWnexxkBpEM4Y1Y2QQxz8zDE9TtFK6PjM7xsizBAPShHVV',
-        //   addressTypeNibble: AddressTypeNibbles.BYRON,
-        //   networkIdOrProtocolMagic: MainnetIds.protocolMagic,
-        //   spendingPath: cardano.str_to_path("44'/1815'/1'/1/0"),
-        //   stakingPath: null,
-        //   stakingKeyHashHex: null,
-        //   stakingBlockchainPointer: null,
-        // }
       );
       window.postMessage(req);
     }
     console.debug(`[YLC] TEST:onShowAddress`);
   }
+  onShowBasePathAddress = (): void => {
+    if (this.state.visible === `${styles.visible}`) {
+      const req = this.makeRequest(
+        OPERATION_NAME.SHOW_ADDRESS,
+        {
+          address: 'addr1qxf84wnw7ez8s0clpchhxlrx7a8mrsx9f9n2xjfazlc62tnvz7nwqamg2fan294qzxlt89nt0ez4xzxpw4vtg7h2fggqgse4hr',
+          addressTypeNibble: AddressTypeNibbles.BASE,
+          networkIdOrProtocolMagic: MainnetIds.chainNetworkId,
+          spendingPath: cardano.str_to_path("1852'/1815'/0'/0/0"),
+          stakingPath: cardano.str_to_path("1852'/1815'/0'/2/0"),
+          stakingKeyHashHex: null,
+          stakingBlockchainPointer: null
+        }
+      );
+      window.postMessage(req);
+    }
+    console.debug(`[YLC] TEST:onDeriveAddress`);
+  }
+  onShowBaseHexAddress = (): void => {
+    if (this.state.visible === `${styles.visible}`) {
+      const req = this.makeRequest(
+        OPERATION_NAME.SHOW_ADDRESS,
+        {
+          address: 'addr1qxf84wnw7ez8s0clpchhxlrx7a8mrsx9f9n2xjfazlc62tnvz7nwqamg2fan294qzxlt89nt0ez4xzxpw4vtg7h2fggqgse4hr',
+          addressTypeNibble: AddressTypeNibbles.BASE,
+          networkIdOrProtocolMagic: MainnetIds.chainNetworkId,
+          spendingPath: cardano.str_to_path("1852'/1815'/0'/0/0"),
+          stakingPath: null,
+          stakingKeyHashHex: '927aba6ef644783f1f0e2f737c66f74fb1c0c54966a3493d17f1a52e',
+          stakingBlockchainPointer: null
+        }
+      );
+      window.postMessage(req);
+    }
+    console.debug(`[YLC] TEST:onDeriveAddress`);
+  }
+  onShowPointerAddress = (): void => {
+    if (this.state.visible === `${styles.visible}`) {
+      const req = this.makeRequest(
+        OPERATION_NAME.SHOW_ADDRESS,
+        {
+          address: 'addr1gxf84wnw7ez8s0clpchhxlrx7a8mrsx9f9n2xjfazlc62tsqqypqv2s002',
+          addressTypeNibble: AddressTypeNibbles.POINTER,
+          networkIdOrProtocolMagic: MainnetIds.chainNetworkId,
+          spendingPath: cardano.str_to_path("1852'/1815'/0'/0/0"),
+          stakingPath: null,
+          stakingKeyHashHex: null,
+          stakingBlockchainPointer: {
+            blockIndex: 0,
+            txIndex: 1,
+            certificateIndex: 2,
+          }
+        }
+      );
+      window.postMessage(req);
+    }
+    console.debug(`[YLC] TEST:onDeriveAddress`);
+  }
+  onShowEnterpriseAddress = (): void => {
+    if (this.state.visible === `${styles.visible}`) {
+      const req = this.makeRequest(
+        OPERATION_NAME.SHOW_ADDRESS,
+        {
+          address: 'addr1vxf84wnw7ez8s0clpchhxlrx7a8mrsx9f9n2xjfazlc62tsmdww5t',
+          addressTypeNibble: AddressTypeNibbles.ENTERPRISE,
+          networkIdOrProtocolMagic: MainnetIds.chainNetworkId,
+          spendingPath: cardano.str_to_path("1852'/1815'/0'/0/0"),
+          stakingPath: null,
+          stakingKeyHashHex: null,
+          stakingBlockchainPointer: null,
+        }
+      );
+      window.postMessage(req);
+    }
+    console.debug(`[YLC] TEST:onDeriveAddress`);
+  }
+  onShowRewardAddress = (): void => {
+    if (this.state.visible === `${styles.visible}`) {
+      const req = this.makeRequest(
+        OPERATION_NAME.SHOW_ADDRESS,
+        {
+          address: 'addr1u8pcjgmx7962w6hey5hhsd502araxp26kdtgagakhaqtq8sxy9w7g',
+          addressTypeNibble: AddressTypeNibbles.REWARD,
+          networkIdOrProtocolMagic: MainnetIds.chainNetworkId,
+          spendingPath: cardano.str_to_path("1852'/1815'/0'/2/0"),
+          stakingPath: null,
+          stakingKeyHashHex: null,
+          stakingBlockchainPointer: null,
+        }
+      );
+      window.postMessage(req);
+    }
+    console.debug(`[YLC] TEST:onDeriveAddress`);
+  }
 
   /**
    * Test deriveAddress
    */
-  onDeriveAddress = (): void => {
+  onDeriveByronAddress = (): void => {
     if (this.state.visible === `${styles.visible}`) {
       const req = this.makeRequest(
         OPERATION_NAME.DERIVE_ADDRESS,
@@ -318,6 +415,93 @@ export default class TestBlock extends React.Component<Props, State> {
           stakingPath: null,
           stakingKeyHashHex: null,
           stakingBlockchainPointer: null
+        }
+      );
+      window.postMessage(req);
+    }
+    console.debug(`[YLC] TEST:onDeriveAddress`);
+  }
+  onDeriveBasePathAddress = (): void => {
+    if (this.state.visible === `${styles.visible}`) {
+      const req = this.makeRequest(
+        OPERATION_NAME.DERIVE_ADDRESS,
+        {
+          addressTypeNibble: AddressTypeNibbles.BASE,
+          networkIdOrProtocolMagic: MainnetIds.chainNetworkId,
+          spendingPath: cardano.str_to_path("1852'/1815'/0'/0/0"),
+          stakingPath: cardano.str_to_path("1852'/1815'/0'/2/0"),
+          stakingKeyHashHex: null,
+          stakingBlockchainPointer: null
+        }
+      );
+      window.postMessage(req);
+    }
+    console.debug(`[YLC] TEST:onDeriveAddress`);
+  }
+  onDeriveBaseHexAddress = (): void => {
+    if (this.state.visible === `${styles.visible}`) {
+      const req = this.makeRequest(
+        OPERATION_NAME.DERIVE_ADDRESS,
+        {
+          addressTypeNibble: AddressTypeNibbles.BASE,
+          networkIdOrProtocolMagic: MainnetIds.chainNetworkId,
+          spendingPath: cardano.str_to_path("1852'/1815'/0'/0/0"),
+          stakingPath: null,
+          stakingKeyHashHex: '927aba6ef644783f1f0e2f737c66f74fb1c0c54966a3493d17f1a52e',
+          stakingBlockchainPointer: null
+        }
+      );
+      window.postMessage(req);
+    }
+    console.debug(`[YLC] TEST:onDeriveAddress`);
+  }
+  onDerivePointerAddress = (): void => {
+    if (this.state.visible === `${styles.visible}`) {
+      const req = this.makeRequest(
+        OPERATION_NAME.DERIVE_ADDRESS,
+        {
+          addressTypeNibble: AddressTypeNibbles.POINTER,
+          networkIdOrProtocolMagic: MainnetIds.chainNetworkId,
+          spendingPath: cardano.str_to_path("1852'/1815'/0'/0/0"),
+          stakingPath: null,
+          stakingKeyHashHex: null,
+          stakingBlockchainPointer: {
+            blockIndex: 0,
+            txIndex: 1,
+            certificateIndex: 2,
+          }
+        }
+      );
+      window.postMessage(req);
+    }
+    console.debug(`[YLC] TEST:onDeriveAddress`);
+  }
+  onDeriveEnterpriseAddress = (): void => {
+    if (this.state.visible === `${styles.visible}`) {
+      const req = this.makeRequest(
+        OPERATION_NAME.DERIVE_ADDRESS,
+        {
+          addressTypeNibble: AddressTypeNibbles.ENTERPRISE,
+          networkIdOrProtocolMagic: MainnetIds.chainNetworkId,
+          spendingPath: cardano.str_to_path("1852'/1815'/0'/0/0"),
+          stakingKeyHashHex: null,
+          stakingBlockchainPointer: null,
+        }
+      );
+      window.postMessage(req);
+    }
+    console.debug(`[YLC] TEST:onDeriveAddress`);
+  }
+  onDeriveRewardAddress = (): void => {
+    if (this.state.visible === `${styles.visible}`) {
+      const req = this.makeRequest(
+        OPERATION_NAME.DERIVE_ADDRESS,
+        {
+          addressTypeNibble: AddressTypeNibbles.REWARD,
+          networkIdOrProtocolMagic: MainnetIds.chainNetworkId,
+          spendingPath: cardano.str_to_path("1852'/1815'/0'/2/0"),
+          stakingKeyHashHex: null,
+          stakingBlockchainPointer: null,
         }
       );
       window.postMessage(req);

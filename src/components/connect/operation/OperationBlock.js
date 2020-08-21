@@ -5,7 +5,7 @@ import { intlShape, defineMessages } from 'react-intl';
 
 import type {
   VerifyAddressInfoType,
-  DeriveAddressInfoType,
+  DeriveAddressRequest,
 }  from '../../../types/cmn';
 import type {
   DeviceCodeType,
@@ -37,7 +37,7 @@ type Props = {|
   currentOperationName: OperationNameType,
   progressState: ProgressStateType,
   verifyAddressInfo: VerifyAddressInfoType,
-  deriveAddressInfo: DeriveAddressInfoType,
+  deriveAddressInfo: DeriveAddressRequest,
   wasDeviceLocked: boolean,
   showPerformActionText?: boolean,
 |};
