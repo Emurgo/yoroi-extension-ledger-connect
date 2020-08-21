@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { intlShape, defineMessages } from 'react-intl';
 
 import type {
+  SignTransactionRequest,
   VerifyAddressInfoType,
   DeriveAddressRequest,
 }  from '../../../types/cmn';
@@ -36,6 +37,7 @@ type Props = {|
   deviceCode: DeviceCodeType,
   currentOperationName: OperationNameType,
   progressState: ProgressStateType,
+  signTxInfo: SignTransactionRequest,
   verifyAddressInfo: VerifyAddressInfoType,
   deriveAddressInfo: DeriveAddressRequest,
   wasDeviceLocked: boolean,
@@ -55,6 +57,7 @@ export default class OperationBlock extends React.Component<Props> {
       deviceCode,
       currentOperationName,
       progressState,
+      signTxInfo,
       verifyAddressInfo,
       deriveAddressInfo,
       wasDeviceLocked,
@@ -91,6 +94,7 @@ export default class OperationBlock extends React.Component<Props> {
             content = (
               <SendTxHintBlock
                 deviceCode={deviceCode}
+                signTxInfo={signTxInfo}
                 wasDeviceLocked={wasDeviceLocked}
               />
             );

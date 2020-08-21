@@ -3,12 +3,6 @@ import { observable, action, runInAction, computed } from 'mobx';
 import AdaApp from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import type {
   BIP32Path,
-  InputTypeUTxO,
-  OutputTypeAddress,
-  OutputTypeAddressParams,
-  StakingBlockchainPointer,
-  Certificate,
-  Withdrawal,
   GetVersionResponse,
   GetSerialResponse,
   DeriveAddressResponse,
@@ -20,6 +14,7 @@ import type {
   MessageType,
   RequestType,
   VerifyAddressInfoType,
+  SignTransactionRequest,
   DeriveAddressRequest,
 } from '../types/cmn';
 import type {
@@ -57,6 +52,7 @@ export default class ConnectStore {
   @observable transportId: TransportIdType;
   @observable progressState: ProgressStateType;
   @observable currentOperationName: OperationNameType;
+  @observable signTxInfo: SignTransactionRequest;
   @observable verifyAddressInfo: VerifyAddressInfoType;
   @observable deriveAddressInfo: DeriveAddressRequest;
   @observable deviceCode: DeviceCodeType
@@ -107,6 +103,11 @@ export default class ConnectStore {
   @action('Changing device name')
   setDeviceCode = (deviceCode: DeviceCodeType): void => {
     this.deviceCode = deviceCode;
+  }
+
+  @action('Change Sign Tx Info')
+  setSignTxInfo = (signTxInfo: SignTransactionRequest): void => {
+    this.signTxInfo = signTxInfo;
   }
 
   @action('Change Verify Address Info')
@@ -168,18 +169,10 @@ export default class ConnectStore {
         this.getExtendedPublicKey(actn, params.hdPath);
         break;
       case OPERATION_NAME.SIGN_TX:
-        this.signTransaction(
+        this.signTransaction({
           actn,
-          params.networkId,
-          params.protocolMagic,
-          params.inputs,
-          params.outputs,
-          params.feeStr,
-          params.ttlStr,
-          params.certificates,
-          params.withdrawals,
-          params.metadataHashHex,
-        );
+          params,
+        });
         break;
       case OPERATION_NAME.SHOW_ADDRESS:
         this.showAddress({
@@ -224,39 +217,33 @@ export default class ConnectStore {
     }
   };
 
-  signTransaction = async (
+  signTransaction: {|
     actn: OperationNameType,
-    networkId: number,
-    protocolMagic: number,
-    inputs: Array<InputTypeUTxO>,
-    outputs: Array<OutputTypeAddress | OutputTypeAddressParams>,
-    feeStr: string,
-    ttlStr: string,
-    certificates: Array<Certificate>,
-    withdrawals: Array<Withdrawal>,
-    metadataHashHex: ?string
-  ): Promise<void> => {
+    params: SignTransactionRequest,
+  |} => Promise<void> = async (request) => {
     let transport;
     try {
+      this.setSignTxInfo(request.params);
+
       transport = await makeTransport(this.transportId);
       await this._detectLedgerDevice(transport);
 
       const adaApp = new AdaApp(transport);
       const resp: SignTransactionResponse = await adaApp.signTransaction(
-        networkId,
-        protocolMagic,
-        inputs,
-        outputs,
-        feeStr,
-        ttlStr,
-        certificates,
-        withdrawals,
-        metadataHashHex,
+        request.params.networkId,
+        request.params.protocolMagic,
+        request.params.inputs,
+        request.params.outputs,
+        request.params.feeStr,
+        request.params.ttlStr,
+        request.params.certificates,
+        request.params.withdrawals,
+        request.params.metadataHashHex,
       );
 
-      this._replyMessageWrap(actn, true, resp);
+      this._replyMessageWrap(request.actn, true, resp);
     } catch (err) {
-      this._replyError(actn, err);
+      this._replyError(request.actn, err);
     } finally {
       transport && transport.close();
     }

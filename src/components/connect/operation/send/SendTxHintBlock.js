@@ -3,6 +3,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { intlShape, defineMessages } from 'react-intl';
 
+import type { SignTransactionRequest } from '../../../../types/cmn';
 import type { DeviceCodeType }  from '../../../../types/enum';
 import HintBlock from '../../../widgets/hint/HintBlock';
 import HintGap from '../../../widgets/hint/HintGap';
@@ -54,6 +55,7 @@ const message = defineMessages({
 
 type Props = {|
   deviceCode: DeviceCodeType,
+  signTxInfo: SignTransactionRequest,
   wasDeviceLocked: boolean,
 |};
 
@@ -74,11 +76,12 @@ export default class SendTxHintBlock extends React.Component<Props> {
     const imgSend4 = require(`../../../../assets/img/nano-${deviceCode}/hint-send-4.png`);
     const imgSend5 = require(`../../../../assets/img/nano-${deviceCode}/hint-send-5.png`);
 
+    let stepNumber = stepStartNumber;
     const content = (
       <div className={styles.stepsGrid}>
         <div className={styles.item1}>
           <HintBlock
-            number={stepStartNumber + 1}
+            number={++stepNumber}
             text={message[`${deviceCode}StartNewTx`]}
             imagePath={imgSend1}
           />
@@ -88,7 +91,7 @@ export default class SendTxHintBlock extends React.Component<Props> {
         </div>
         <div className={styles.item2}>
           <HintBlock
-            number={stepStartNumber + 2}
+            number={++stepNumber}
             text={message[`${deviceCode}ConfirmValue`]}
             imagePath={imgSend2}
           />
@@ -98,14 +101,14 @@ export default class SendTxHintBlock extends React.Component<Props> {
         </div>
         <div className={styles.item3}>
           <HintBlock
-            number={stepStartNumber + 3}
+            number={++stepNumber}
             text={message[`${deviceCode}ConfirmAddress`]}
             imagePath={imgSend3}
           />
         </div>
         <div className={styles.item4}>
           <HintBlock
-            number={stepStartNumber + 4}
+            number={++stepNumber}
             text={message[`${deviceCode}ConfirmFee`]}
             imagePath={imgSend4}
           />
@@ -115,7 +118,7 @@ export default class SendTxHintBlock extends React.Component<Props> {
         </div>
         <div className={styles.item5}>
           <HintBlock
-            number={stepStartNumber + 5}
+            number={++stepNumber}
             text={message[`${deviceCode}ConfirmTx`]}
             imagePath={imgSend5}
           />
