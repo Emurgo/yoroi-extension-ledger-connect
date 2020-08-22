@@ -13,6 +13,7 @@ import { CertTypes } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import {
   pathToString,
 } from '../../../../utils/cmn';
+import { encode, toWords } from 'bech32';
 
 import styles from './SendTxHintBlock.scss';
 
@@ -69,6 +70,14 @@ const message = defineMessages({
     id: 'hint.verifyAddress.path',
     defaultMessage: '!!!Make sure the address path shown on your Ledger is the same as the one shown below, then press <strong>both</strong> buttons.'
   },
+  sWithdrawal: {
+    id: 'hint.withdrawal',
+    defaultMessage: '!!!Confirm the withdrawal, then press <strong>both</strong> buttons.'
+  },
+  sMetadata: {
+    id: 'hint.metadata',
+    defaultMessage: '!!!Confirm the metadata <strong>hash</strong>, then press <strong>both</strong> buttons.'
+  },
   xStartNewTx: {
     id: 'hint.nanoX.sendTx.startNewTx',
     defaultMessage: '!!!Check your Ledger screen, then press <strong>both</strong> buttons.'
@@ -121,6 +130,10 @@ const message = defineMessages({
     id: 'hint.verifyAddress.path',
     defaultMessage: '!!!Make sure the address path shown on your Ledger is the same as the one shown below, then press <strong>both</strong> buttons.'
   },
+  xWithdrawal: {
+    id: 'hint.withdrawal',
+    defaultMessage: '!!!Confirm the withdrawal, then press <strong>both</strong> buttons.'
+  },
 });
 
 type Props = {|
@@ -136,7 +149,7 @@ export default class SendTxHintBlock extends React.Component<Props> {
   renderCertificate: {|
     cert: Certificate,
     getAndIncrementStep: void => number,
-  |} => (null | Node) = (request) => {
+  |} => Array<Node> = (request) => {
     const stakingKey = require(`../../../../assets/img/nano-${this.props.deviceCode}/hint-staking-key.png`);
 
     if (request.cert.type === CertTypes.staking_key_registration) {
@@ -145,32 +158,30 @@ export default class SendTxHintBlock extends React.Component<Props> {
       const firstStep = request.getAndIncrementStep();
       const secondStep = request.getAndIncrementStep();
       const thirdStep = request.getAndIncrementStep();
-      return (
-        <>
-          <HintBlock
-            key={firstStep}
-            number={firstStep}
-            text={message[`${this.props.deviceCode}Registration`]}
-            imagePath={imgRegister}
-          />
-          <HintGap key={firstStep + 'gap'} />
-          <HintBlock
-            key={secondStep}
-            number={secondStep}
-            text={message[`${this.props.deviceCode}Path`]}
-            imagePath={stakingKey}
-            secondaryText={pathToString(request.cert.path)}
-          />
-          <HintGap key={secondStep + 'gap'} />
-          <HintBlock
-            key={thirdStep}
-            number={thirdStep}
-            text={message[`${this.props.deviceCode}RegistrationComplete`]}
-            imagePath={imgRegisterConfirm}
-          />
-          <HintGap key={thirdStep + 'gap'} />
-        </>
-      );
+      return [
+        (<HintBlock
+          key={firstStep}
+          number={firstStep}
+          text={message[`${this.props.deviceCode}Registration`]}
+          imagePath={imgRegister}
+        />),
+        (<HintGap key={firstStep + 'gap'} />),
+        (<HintBlock
+          key={secondStep}
+          number={secondStep}
+          text={message[`${this.props.deviceCode}Path`]}
+          imagePath={stakingKey}
+          secondaryText={pathToString(request.cert.path)}
+        />),
+        (<HintGap key={secondStep + 'gap'} />),
+        (<HintBlock
+          key={thirdStep}
+          number={thirdStep}
+          text={message[`${this.props.deviceCode}RegistrationComplete`]}
+          imagePath={imgRegisterConfirm}
+        />),
+        (<HintGap key={thirdStep + 'gap'} />),
+      ];
     }
     if (request.cert.type === CertTypes.delegation) {
       const imgDelegatePool = require(`../../../../assets/img/nano-${this.props.deviceCode}/hint-delegation-pool.png`);
@@ -178,33 +189,31 @@ export default class SendTxHintBlock extends React.Component<Props> {
       const firstStep = request.getAndIncrementStep();
       const secondStep = request.getAndIncrementStep();
       const thirdStep = request.getAndIncrementStep();
-      return (
-        <>
-          <HintBlock
-            key={firstStep}
-            number={firstStep}
-            text={message[`${this.props.deviceCode}Delegation`]}
-            imagePath={imgDelegatePool}
-            secondaryText={request.cert.poolKeyHashHex ?? ''}
-          />
-          <HintGap key={firstStep + 'gap'} />
-          <HintBlock
-            key={secondStep}
-            number={secondStep}
-            text={message[`${this.props.deviceCode}Path`]}
-            imagePath={stakingKey}
-            secondaryText={pathToString(request.cert.path)}
-          />
-          <HintGap key={secondStep + 'gap'} />
-          <HintBlock
-            key={thirdStep}
-            number={thirdStep}
-            text={message[`${this.props.deviceCode}DelegationComplete`]}
-            imagePath={imgDelegateConfirm}
-          />
-          <HintGap key={thirdStep + 'gap'} />
-        </>
-      );
+      return [
+        (<HintBlock
+          key={firstStep}
+          number={firstStep}
+          text={message[`${this.props.deviceCode}Delegation`]}
+          imagePath={imgDelegatePool}
+          secondaryText={request.cert.poolKeyHashHex ?? ''}
+        />),
+        (<HintGap key={firstStep + 'gap'} />),
+        (<HintBlock
+          key={secondStep}
+          number={secondStep}
+          text={message[`${this.props.deviceCode}Path`]}
+          imagePath={stakingKey}
+          secondaryText={pathToString(request.cert.path)}
+        />),
+        (<HintGap key={secondStep + 'gap'} />),
+        (<HintBlock
+          key={thirdStep}
+          number={thirdStep}
+          text={message[`${this.props.deviceCode}DelegationComplete`]}
+          imagePath={imgDelegateConfirm}
+        />),
+        (<HintGap key={thirdStep + 'gap'} />),
+      ];
     }
     if (request.cert.type === CertTypes.staking_key_deregistration) {
       const imgDeregister = require(`../../../../assets/img/nano-${this.props.deviceCode}/hint-deregister-key.png`);
@@ -212,35 +221,33 @@ export default class SendTxHintBlock extends React.Component<Props> {
       const firstStep = request.getAndIncrementStep();
       const secondStep = request.getAndIncrementStep();
       const thirdStep = request.getAndIncrementStep();
-      return (
-        <>
-          <HintBlock
-            key={firstStep}
-            number={firstStep}
-            text={message[`${this.props.deviceCode}Deregistration`]}
-            imagePath={imgDeregister}
-          />
-          <HintGap key={firstStep + 'gap'} />
-          <HintBlock
-            key={secondStep}
-            number={secondStep}
-            text={message[`${this.props.deviceCode}Path`]}
-            imagePath={stakingKey}
-            secondaryText={pathToString(request.cert.path)}
-          />
-          <HintGap key={secondStep + 'gap'} />
-          <HintBlock
-            key={thirdStep}
-            number={thirdStep}
-            text={message[`${this.props.deviceCode}DeregistrationComplete`]}
-            imagePath={imgDeregisterConfirm}
-          />
-          <HintGap key={thirdStep + 'gap'} />
-        </>
-      );
+      return [
+        (<HintBlock
+          key={firstStep}
+          number={firstStep}
+          text={message[`${this.props.deviceCode}Deregistration`]}
+          imagePath={imgDeregister}
+        />),
+        (<HintGap key={firstStep + 'gap'} />),
+        (<HintBlock
+          key={secondStep}
+          number={secondStep}
+          text={message[`${this.props.deviceCode}Path`]}
+          imagePath={stakingKey}
+          secondaryText={pathToString(request.cert.path)}
+        />),
+        (<HintGap key={secondStep + 'gap'} />),
+        (<HintBlock
+          key={thirdStep}
+          number={thirdStep}
+          text={message[`${this.props.deviceCode}DeregistrationComplete`]}
+          imagePath={imgDeregisterConfirm}
+        />),
+        (<HintGap key={thirdStep + 'gap'} />),
+      ];
     }
     //  unhandled certificate type
-    return null;
+    return [];
   }
 
   render() {
@@ -257,6 +264,8 @@ export default class SendTxHintBlock extends React.Component<Props> {
     const imgSend4 = require(`../../../../assets/img/nano-${deviceCode}/hint-send-4.png`);
     const imgSend5 = require(`../../../../assets/img/nano-${deviceCode}/hint-send-5.png`);
     const imgTtl = require(`../../../../assets/img/nano-${deviceCode}/hint-ttl.png`);
+    const imgWithdrawal = require(`../../../../assets/img/nano-${deviceCode}/hint-withdrawal.png`);
+    const imgMetadata = require(`../../../../assets/img/nano-${deviceCode}/hint-metadata.png`);
 
     let stepNumber = stepStartNumber;
     const getAndIncrementStep = () => {
@@ -276,16 +285,25 @@ export default class SendTxHintBlock extends React.Component<Props> {
           imagePath={imgSend2}
         />
         <HintGap />
-        {signTxInfo.outputs.length > 0 && (
-          <>
-            <HintBlock
-              number={++stepNumber}
+        {signTxInfo.outputs.length > 0 && signTxInfo.outputs.map(output => {
+          if (output.addressHex == null) return null;
+          const nextStep = ++stepNumber;
+          return [
+            (<HintBlock
+              key={nextStep}
+              number={nextStep}
               text={message[`${deviceCode}ConfirmAddress`]}
               imagePath={imgSend3}
-            />
-            <HintGap />
-          </>
-        )}
+              // TODO: this doesn't handle base58 addresses
+              // secondaryText={encode(
+              //   'addr',
+              //   toWords(output.addressHex),
+              //   1023, // bech32 can detect errors up this point
+              // )}
+            />),
+            (<HintGap key={nextStep + 'gap'} />),
+          ];
+        })}
         <HintBlock
           number={++stepNumber}
           text={message[`${deviceCode}ConfirmFee`]}
@@ -299,11 +317,35 @@ export default class SendTxHintBlock extends React.Component<Props> {
         />
         <HintGap />
         {signTxInfo.certificates.map(cert => this.renderCertificate({ cert, getAndIncrementStep }))}
+        {signTxInfo.withdrawals.length > 0 && signTxInfo.withdrawals.map(_withdrawal => {
+          const nextStep = ++stepNumber;
+          return [
+            (<HintBlock
+              key={nextStep}
+              number={nextStep}
+              text={message[`${deviceCode}Withdrawal`]}
+              imagePath={imgWithdrawal}
+            />),
+            (<HintGap key={nextStep + 'gap'} />),
+          ];
+        })}
+        {signTxInfo.metadataHashHex != null && (
+          <>
+            <HintBlock
+              number={++stepNumber}
+              text={message[`${deviceCode}Metadata`]}
+              imagePath={imgMetadata}
+              secondaryText={signTxInfo.metadataHashHex}
+            />
+            <HintGap />
+          </>
+        )}
         <HintBlock
           number={++stepNumber}
           text={message[`${deviceCode}ConfirmTx`]}
           imagePath={imgSend5}
         />
+        <HintGap />
       </div>
     );
 

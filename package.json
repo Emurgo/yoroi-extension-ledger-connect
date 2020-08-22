@@ -54,6 +54,7 @@
     "@ledgerhq/hw-transport-webauthn": "5.22.0",
     "@ledgerhq/hw-transport-webusb": "5.22.0",
     "babel-polyfill": "6.26.0",
+    "bech32": "^1.1.4",
     "es6-error": "4.1.1",
     "lodash": "4.17.20",
     "mobx": "5.15.6",
