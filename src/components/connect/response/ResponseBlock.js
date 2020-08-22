@@ -21,7 +21,6 @@ type Props = {|
 @observer
 export default class ResponseBlock extends Component<Props> {
   static contextTypes = { intl: intlShape.isRequired };
-  static defaultProps = { showText: false };
 
   root: ?HTMLElement;
 
@@ -36,9 +35,11 @@ export default class ResponseBlock extends Component<Props> {
       <div className={styles.component}>
         {title}
         <div className={styles.response}>
-          <pre><code>
-          {JSON.stringify(this.props.response, null, 2)}
-          </code></pre>
+          <pre>
+            <code>
+              {JSON.stringify(this.props.response, null, 2)}
+            </code>
+          </pre>
         </div>
       </div>
     );
