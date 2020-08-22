@@ -31,6 +31,7 @@ import {
   YOROI_LEDGER_CONNECT_TARGET_NAME,
   DEVICE_LOCK_CHECK_TIMEOUT_MS,
   ENV,
+  SUPPORTED_VERSION,
 } from '../const';
 import {
   ledgerErrToMessage,
@@ -42,11 +43,7 @@ import {
   setKnownDeviceCode,
   getKnownDeviceCode,
 } from '../utils/storage';
-
-export type ExtendedPublicKeyResp = {
-  ePublicKey: GetExtendedPublicKeyResponse,
-  deviceVersion: GetVersionResponse
-};
+import semverSatisfies from 'semver/functions/satisfies';
 
 export default class ConnectStore {
   @observable transportId: TransportIdType;
@@ -140,6 +137,12 @@ export default class ConnectStore {
 
     const adaApp = new AdaApp(transport);
     const verResp = await adaApp.getVersion();
+    // const serialResp = await adaApp.getSerial();
+
+    const semverResp = `${verResp.major}.${verResp.minor}.${verResp.patch}`;
+    if (!semverSatisfies(semverResp, SUPPORTED_VERSION)) {
+      throw new Error(`Incorrect Cardano app version. Supports version ${SUPPORTED_VERSION} but you have version ${semverResp}`);
+    }
 
     this.setProgressState(PROGRESS_STATE.DEVICE_FOUND);
 
