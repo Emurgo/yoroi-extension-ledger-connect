@@ -51,5 +51,6 @@
   "hint.verifyAddress.address": "Make sure the address shown on your Ledger is the same as the one shown below, then press <strong>both</strong> buttons.",
   "hint.nanoX.verifyAddress.address": "Make sure the address shown on your Ledger is the same as the one shown below. Press the <strong>right</strong> button on your Ledger to scroll to the end of the address, then press <strong>both</strong> buttons.",
   "hint.warning": "Accept the warning by pressing <strong>both</strong> buttons.",
-  "hint.withdrawal": "Confirm the withdrawal, then press <strong>both</strong> buttons."
+  "hint.withdrawal": "Confirm the withdrawal, then press <strong>both</strong> buttons.",
+  "response.title": "Response"
 }

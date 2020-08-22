@@ -35,6 +35,8 @@ type Props = {|
 
 type State = {|
   visible: string,
+  /** we can't change what Ledger query we're doing or how it's done once started */
+  startedQuery: boolean,
 |};
 
 @observer
@@ -43,6 +45,7 @@ export default class TestBlock extends React.Component<Props, State> {
     super();
     this.state = {
       visible: `${styles.visible}`,
+      startedQuery: false,
     };
   }
 
@@ -52,6 +55,10 @@ export default class TestBlock extends React.Component<Props, State> {
 
   onCompDoubleClicked = () => {
     this.setState({ visible: `${styles.hidden}` });
+  }
+
+  setStartedQuery = () => {
+    this.setState({ startedQuery: true });
   }
 
   onLangSelectionChange = (locale: string): void => {
@@ -157,11 +164,13 @@ export default class TestBlock extends React.Component<Props, State> {
         <div className={styles.column1}>
           {supportedLocals}
         </div>
-        <div className={styles.column2}>
-          {transportSelection}
-          {operationSelection}
-          {visibilityInfo}
-        </div>
+        {this.state.startedQuery === false && (
+          <div className={styles.column2}>
+            {transportSelection}
+            {operationSelection}
+            {visibilityInfo}
+          </div>
+        )}
       </div>
     );
   }
@@ -513,6 +522,7 @@ export default class TestBlock extends React.Component<Props, State> {
    * Makes Request object
    */
   makeRequest = (action: string, params: any) => {
+    this.setStartedQuery();
     return {
       action,
       params,

@@ -9,7 +9,6 @@ import type {
   GetExtendedPublicKeyResponse,
   SignTransactionResponse,
 } from '@cardano-foundation/ledgerjs-hw-app-cardano';
-
 import type {
   MessageType,
   RequestType,
@@ -30,7 +29,8 @@ import {
 } from '../types/enum';
 import {
   YOROI_LEDGER_CONNECT_TARGET_NAME,
-  DEVICE_LOCK_CHECK_TIMEOUT_MS
+  DEVICE_LOCK_CHECK_TIMEOUT_MS,
+  ENV,
 } from '../const';
 import {
   ledgerErrToMessage,
@@ -57,6 +57,7 @@ export default class ConnectStore {
   @observable deriveAddressInfo: DeriveAddressRequest;
   @observable deviceCode: DeviceCodeType
   @observable wasDeviceLocked: boolean;
+  @observable response: void | MessageType;
   userInteractableRequest: RequestType;
 
   constructor(transportId: TransportIdType) {
@@ -118,6 +119,11 @@ export default class ConnectStore {
   @action('Change Derive Address Info')
   setDeriveAddressInfo = (deriveAddressInfo: DeriveAddressRequest): void => {
     this.deriveAddressInfo = deriveAddressInfo;
+  }
+
+  @action('Set response')
+  setResponse = (response: MessageType): void => {
+    this.response = response;
   }
 
   _detectLedgerDevice = async (transport: any): Promise<GetVersionResponse> => {
@@ -349,9 +355,14 @@ export default class ConnectStore {
    */
   _onMessage = (req: any): void => {
     const { data } = req;
-    if (data &&
-      data.action &&
-      data.target === YOROI_LEDGER_CONNECT_TARGET_NAME) {
+    if (data == null) {
+      console.error(`Missing data in req ${req}`);
+    }
+    if (data.target !== YOROI_LEDGER_CONNECT_TARGET_NAME) {
+      console.debug(`[YLC] Got non ledger ConnectStore\nrequest: ${req.origin}\ndata: ${JSON.stringify(req.data, null, 2)}`);
+      return;
+    }
+    if (data.action) {
 
       const { params } = data;
       const actn = data.action;
@@ -392,7 +403,7 @@ export default class ConnectStore {
           break;
       }
     } else {
-      console.debug(`[YLC] Got non ledger connectore\nrequest: ${req.origin}\ndata: ${JSON.stringify(req.data, null, 2)}`);
+      console.debug(`[YLC] Missing action in request.\nrequest: ${req.origin}\ndata: ${JSON.stringify(req.data, null, 2)}`);
     }
   }
 
@@ -428,6 +439,10 @@ export default class ConnectStore {
    * @param {*} msg MessageType object as reply
    */
   _replyMessage = (msg: MessageType): void => {
+    if (ENV.isDevelopment) {
+      this.setResponse(msg);
+      this.setProgressState(PROGRESS_STATE.DEVICE_RESPONSE);
+    }
     msg.action = `${msg.action}-reply`;
     window.postMessage(msg, '*');
   }

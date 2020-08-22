@@ -6,6 +6,7 @@ import type {
   SignTransactionRequest,
   VerifyAddressInfoType,
   DeriveAddressRequest,
+  MessageType,
 } from '../../types/cmn';
 import type {
   DeviceCodeType,
@@ -22,6 +23,7 @@ import WebAuthnTopBlock from './webauthn-top/WebAuthnTopBlock';
 import TitleBlock from './title/TitleBlock';
 import DeviceSelectionBlock from './device-selection/DeviceSelectionBlock';
 import OperationBlock from './operation/OperationBlock';
+import ResponseBlock from './response/ResponseBlock';
 
 import styles from './ConnectBlock.scss';
 
@@ -37,6 +39,7 @@ type Props = {|
   verifyAddressInfo: VerifyAddressInfoType,
   deriveAddressInfo: DeriveAddressRequest,
   wasDeviceLocked: boolean,
+  response: MessageType | void
 |};
 
 @observer
@@ -56,7 +59,8 @@ export default class ConnectBlock extends React.Component<Props> {
       signTxInfo,
       verifyAddressInfo,
       deriveAddressInfo,
-      wasDeviceLocked
+      wasDeviceLocked,
+      response,
     } = this.props;
 
     let content;
@@ -78,6 +82,14 @@ export default class ConnectBlock extends React.Component<Props> {
             knownDeviceCode={deviceCode}
             setDeviceCode={setDeviceCode}
             executeAction={executeAction}
+          />
+        );
+        break;
+      case PROGRESS_STATE.DEVICE_RESPONSE:
+        if (response == null) throw new Error(`Missing response`);
+        content = (
+          <ResponseBlock
+            response={response}
           />
         );
         break;
