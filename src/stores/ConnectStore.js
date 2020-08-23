@@ -55,6 +55,7 @@ export default class ConnectStore {
   @observable deviceCode: DeviceCodeType
   @observable wasDeviceLocked: boolean;
   @observable response: void | MessageType;
+  @observable expectedSerial: void | string;
   userInteractableRequest: RequestType;
 
   constructor(transportId: TransportIdType) {
@@ -137,7 +138,12 @@ export default class ConnectStore {
 
     const adaApp = new AdaApp(transport);
     const verResp = await adaApp.getVersion();
-    // const serialResp = await adaApp.getSerial();
+    if (this.expectedSerial != null) {
+      const currentSerial = await adaApp.getSerial();
+      if (currentSerial.serial !== this.expectedSerial) {
+        throw new Error(`Incorrect hardware wallet. This wallet was created with a device with serial ID ${this.expectedSerial ?? 'undefined'}, but you are currently using ${currentSerial.serial}.`);
+      }
+    }
 
     const semverResp = `${verResp.major}.${verResp.minor}.${verResp.patch}`;
     if (!semverSatisfies(semverResp, SUPPORTED_VERSION)) {
@@ -356,57 +362,71 @@ export default class ConnectStore {
    * Handle message from Content Script [ Website <== Content Script ]
    * @param {*} req request message object
    */
-  _onMessage = (req: any): void => {
+  _onMessage = (req: {
+    origin?: string,
+    data?: ?{
+      serial?: string,
+      params?: any,
+      target?: string,
+      action?: OperationNameType,
+      ...,
+    },
+    ...
+  }): void => {
     const { data } = req;
     if (data == null) {
-      console.error(`Missing data in req ${req}`);
-    }
-    if (data.target !== YOROI_LEDGER_CONNECT_TARGET_NAME) {
-      console.debug(`[YLC] Got non ledger ConnectStore\nrequest: ${req.origin}\ndata: ${JSON.stringify(req.data, null, 2)}`);
+      console.error(`Missing data in req ${JSON.stringify(req)}`);
       return;
     }
-    if (data.action) {
+    if (data.target !== YOROI_LEDGER_CONNECT_TARGET_NAME) {
+      console.debug(`[YLC] Got non ledger ConnectStore\nrequest: ${req.origin ?? 'undefined'}\ndata: ${JSON.stringify(req.data, null, 2) ?? 'undefined'}`);
+      return;
+    }
+    if (data.serial != null) {
+      runInAction(() => { this.expectedSerial = data.serial; });
+    }
+    if (data.action == null) {
+      console.error(`Missing action in req ${JSON.stringify(req)}`);
+      return;
+    }
 
-      const { params } = data;
-      const actn = data.action;
+    const { params } = data;
+    const actn = data.action;
 
-      console.debug(`[YLC] request: ${actn}`);
+    console.debug(`[YLC] request: ${actn}`);
 
-      switch (actn) {
-        case OPERATION_NAME.GET_LEDGER_VERSION:
-        case OPERATION_NAME.GET_SERIAL:
-        case OPERATION_NAME.GET_EXTENDED_PUBLIC_KEY:
-        case OPERATION_NAME.SIGN_TX:
-        case OPERATION_NAME.SHOW_ADDRESS:
-        case OPERATION_NAME.DERIVE_ADDRESS:
-          // Only one operation in one session
-          if (!this.userInteractableRequest) {
-            this.userInteractableRequest = {
-              params,
-              action: actn,
-            };
+    switch (actn) {
+      case OPERATION_NAME.GET_LEDGER_VERSION:
+      case OPERATION_NAME.GET_SERIAL:
+      case OPERATION_NAME.GET_EXTENDED_PUBLIC_KEY:
+      case OPERATION_NAME.SIGN_TX:
+      case OPERATION_NAME.SHOW_ADDRESS:
+      case OPERATION_NAME.DERIVE_ADDRESS:
+        // Only one operation in one session
+        if (!this.userInteractableRequest) {
+          this.userInteractableRequest = {
+            params,
+            action: actn,
+          };
 
-            runInAction(() => {
-              // In case of create wallet, we always
-              // want user to choose device
-              if (actn === OPERATION_NAME.GET_EXTENDED_PUBLIC_KEY) {
-                this.setDeviceCode(DEVICE_CODE.NONE);
-                setKnownDeviceCode(DEVICE_CODE.NONE);
-              }
-              this.setCurrentOperationName(actn);
-              this.setProgressState(PROGRESS_STATE.DEVICE_TYPE_SELECTION);
-            });
-          }
-          break;
-        case OPERATION_NAME.CLOSE_WINDOW:
-          window.close();
-          break;
-        default:
-          console.error(`[YLC] Unexpected action requested: ${actn}`);
-          break;
-      }
-    } else {
-      console.debug(`[YLC] Missing action in request.\nrequest: ${req.origin}\ndata: ${JSON.stringify(req.data, null, 2)}`);
+          runInAction(() => {
+            // In case of create wallet, we always
+            // want user to choose device
+            if (actn === OPERATION_NAME.GET_EXTENDED_PUBLIC_KEY) {
+              this.setDeviceCode(DEVICE_CODE.NONE);
+              setKnownDeviceCode(DEVICE_CODE.NONE);
+            }
+            this.setCurrentOperationName(actn);
+            this.setProgressState(PROGRESS_STATE.DEVICE_TYPE_SELECTION);
+          });
+        }
+        break;
+      case OPERATION_NAME.CLOSE_WINDOW:
+        window.close();
+        break;
+      default:
+        console.error(`[YLC] Unexpected action requested: ${actn}`);
+        break;
     }
   }
 
