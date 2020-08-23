@@ -119,6 +119,7 @@ module.exports = (env) => {
     config.devtool = 'eval-source-map';
 
     config.output = {
+      publicPath: '/',
       path: path.join(__dirname, 'dist'),
       chunkFilename: '[name].bundle.js',
       filename: '[name].bundle.js'

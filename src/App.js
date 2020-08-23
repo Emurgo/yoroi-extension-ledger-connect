@@ -17,6 +17,13 @@ import pt from 'react-intl/locale-data/pt';
 import RootStore from './stores';
 
 import LoadingSpinner from './components/widgets/LoadingSpinner';
+import ComingSoon from './components/widgets/ComingSoon';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 
 import { translations } from './i18n/translations';
 import { DEFAULT_LOCALE } from './const';
@@ -73,7 +80,17 @@ export default class App extends React.Component<Props> {
       <IntlProvider {...{ locale, key: locale, messages: mergedMessages }}>
         <Suspense fallback={loadingSpinner}>
           <StyleVariableLoader variables={styleVariables} />
-          <ConnectPage rootStore={this.props.rootStore} />
+          <Router>
+            <Switch>
+              <Route exact path="/">
+                <ComingSoon />
+              </Route>
+              <Route path="/v2">
+                <ConnectPage rootStore={this.props.rootStore} />
+              </Route>
+              <Redirect to="/" />
+            </Switch>
+          </Router>
         </Suspense>
       </IntlProvider>
     );
