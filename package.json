@@ -38,7 +38,7 @@
     "gh-pages": "3.1.0",
     "html-webpack-plugin": "4.3.0",
     "node-sass": "4.14.1",
-    "sass-loader": "9.0.3",
+    "sass-loader": "10.0.2",
     "style-loader": "1.2.1",
     "svg-inline-loader": "0.8.2",
     "url-loader": "4.1.0",
