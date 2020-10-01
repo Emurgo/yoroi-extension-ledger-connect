@@ -50,7 +50,7 @@
   "dependencies": {
     "@cardano-foundation/ledgerjs-hw-app-cardano": "2.0.1",
     "@ledgerhq/hw-transport-u2f": "5.22.0",
-    "@ledgerhq/hw-transport-webauthn": "5.22.0",
+    "@ledgerhq/hw-transport-webauthn": "5.25.0",
     "@ledgerhq/hw-transport-webusb": "5.22.0",
     "babel-polyfill": "6.26.0",
     "bech32": "1.1.4",

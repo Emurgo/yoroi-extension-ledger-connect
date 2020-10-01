@@ -1054,19 +1054,19 @@
     bech32 "^1.1.4"
     node-int64 "^0.4.0"
 
-"@ledgerhq/devices@^5.22.0":
-  version "5.22.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/devices/-/devices-5.22.0.tgz#18595f3545b57cf60e50d6e9d83095dda21f575f"
-  integrity sha512-oJxhee/zlHmIx66zvQQTSpIsHOiiLjALemTX9oUtB4xQwFvoiptPnBCeTDTM9teode7wzk7oE9qdUAZuat+nCg==
+"@ledgerhq/devices@^5.22.0", "@ledgerhq/devices@^5.25.0":
+  version "5.25.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/devices/-/devices-5.25.0.tgz#c9522d7495e7be41fad59eb7d5e4e3e1030fd205"
+  integrity sha512-3wsxVDkUYd5ERA5KVy99wEGbHAkfsuWbQ8b2ruzr8JX9wIxUS8mu1XkdoDt5M+H4jXP9C8ZGj9YT3VsiiIzfxg==
   dependencies:
-    "@ledgerhq/errors" "^5.22.0"
-    "@ledgerhq/logs" "^5.22.0"
-    rxjs "^6.6.2"
+    "@ledgerhq/errors" "^5.25.0"
+    "@ledgerhq/logs" "^5.25.0"
+    rxjs "^6.6.3"
 
-"@ledgerhq/errors@^5.22.0":
-  version "5.22.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-5.22.0.tgz#7327fc152d4896ddc26aada0943065db21c14880"
-  integrity sha512-XDT0meBn39+q+JWzUFXmiFbVYLTy+uHRFMb9napcxyZ0Q/MdKkle9/vkgtvRHjPIkGobklXpyefsgH3BZQHukA==
+"@ledgerhq/errors@^5.22.0", "@ledgerhq/errors@^5.25.0":
+  version "5.25.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-5.25.0.tgz#2a24b7ad6a88719046de4fcdf0b4c27b9ba79523"
+  integrity sha512-+FyyweA9odaWRwRkS35Wf0n2gC4tGsBlgW6VMhT7m1kcwVzUqNFyQzqMKqYvYEAga0P0X59wE+IAlqokkG7Usg==
 
 "@ledgerhq/hw-transport-u2f@5.22.0":
   version "5.22.0"
@@ -1078,15 +1078,15 @@
     "@ledgerhq/logs" "^5.22.0"
     u2f-api "0.2.7"
 
-"@ledgerhq/hw-transport-webauthn@5.22.0":
-  version "5.22.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-webauthn/-/hw-transport-webauthn-5.22.0.tgz#e2750a5a8f05a5f2728b22811043d192a6f9a33b"
-  integrity sha512-nM0e0vvxBpp25TvK6QetCq31Q5kEweZSTvRIvUxFtzWh2Yg+lRuvKIYMeNdkxd+6jvKtd2jzV4BsEuqqtG0l3A==
+"@ledgerhq/hw-transport-webauthn@5.25.0":
+  version "5.25.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-webauthn/-/hw-transport-webauthn-5.25.0.tgz#62e22a45a67ac51664fb91a4af0f2f586adbdfa9"
+  integrity sha512-+3zKnQgSfjFST4O6QhNbwPHH0ZE3Rs9abgdTkYi5AB7WPX/s+u1HM//8mnGdcJeuniMe90DBwCjcuZd0o6ebWQ==
   dependencies:
-    "@ledgerhq/devices" "^5.22.0"
-    "@ledgerhq/errors" "^5.22.0"
-    "@ledgerhq/hw-transport" "^5.22.0"
-    "@ledgerhq/logs" "^5.22.0"
+    "@ledgerhq/devices" "^5.25.0"
+    "@ledgerhq/errors" "^5.25.0"
+    "@ledgerhq/hw-transport" "^5.25.0"
+    "@ledgerhq/logs" "^5.25.0"
 
 "@ledgerhq/hw-transport-webusb@5.22.0":
   version "5.22.0"
@@ -1098,19 +1098,19 @@
     "@ledgerhq/hw-transport" "^5.22.0"
     "@ledgerhq/logs" "^5.22.0"
 
-"@ledgerhq/hw-transport@^5.12.0", "@ledgerhq/hw-transport@^5.22.0":
-  version "5.22.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-5.22.0.tgz#d627948b43005ec9e7dfe85adf9aa01e130de280"
-  integrity sha512-MFfkVGYMYnr6fI4XGnJQNLd36JIrRpvd5WBmVSDhCO3UKUER2fJ9koVBGc97o7yXtE5IAlJKF+nR9HZJIa0lRQ==
+"@ledgerhq/hw-transport@^5.12.0", "@ledgerhq/hw-transport@^5.22.0", "@ledgerhq/hw-transport@^5.25.0":
+  version "5.25.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-5.25.0.tgz#e04e2130fedcb433ee68f25125e6ac49efa0aede"
+  integrity sha512-q6hhWWwbSZPmzdTaQMowY+uQYwCC4xRqRQFQFgF6BjZFn2n+AwGOEU9mDmHnjL6XxkQfj8CjWuPJSRRv5OLmlg==
   dependencies:
-    "@ledgerhq/devices" "^5.22.0"
-    "@ledgerhq/errors" "^5.22.0"
+    "@ledgerhq/devices" "^5.25.0"
+    "@ledgerhq/errors" "^5.25.0"
     events "^3.2.0"
 
-"@ledgerhq/logs@^5.22.0":
-  version "5.22.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-5.22.0.tgz#a54d6b5b391cdb4c2eacc9500feb04b90475c361"
-  integrity sha512-jV4mJxD1aieORm+sK9bYakQd9GMLd7KAxgt2IaxhrTU+QD5Ne47mxQOTys9p7f5w25ujs3R+Px2t3KiMRASHtg==
+"@ledgerhq/logs@^5.22.0", "@ledgerhq/logs@^5.25.0":
+  version "5.25.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-5.25.0.tgz#94dd930a33fd05e3897532f554e31397a45247b6"
+  integrity sha512-OPlkvufjwJWQR+Jp7C6GaEeub+ZHzh3x0xyQMVLL62O7VGrhpzjwq2il/aLNt687k7mKJ+Vg6lFL1B6gO1ZiIg==
 
 "@svgr/babel-plugin-add-jsx-attribute@^5.4.0":
   version "5.4.0"
@@ -6932,10 +6932,10 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   dependencies:
     aproba "^1.1.1"
 
-rxjs@^6.6.2:
-  version "6.6.2"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.6.2.tgz#8096a7ac03f2cc4fe5860ef6e572810d9e01c0d2"
-  integrity sha512-BHdBMVoWC2sL26w//BCu3YzKT4s2jip/WhwsGEDmeKYBhKDZeYezVUnHatYB7L85v5xs0BAQmg6BEYJEKxBabg==
+rxjs@^6.6.3:
+  version "6.6.3"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.6.3.tgz#8ca84635c4daa900c0d3967a6ee7ac60271ee552"
+  integrity sha512-trsQc+xYYXZ3urjOiJOuCOa5N3jAZ3eiSpQB5hIT8zGlL2QfnHLJ2r7GMkBGuIausdJN1OneaI6gQlsqNHHmZQ==
   dependencies:
     tslib "^1.9.0"
 
