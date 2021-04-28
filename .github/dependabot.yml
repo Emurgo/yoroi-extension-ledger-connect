@@ -1,0 +1,75 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: monthly
+    timezone: PST8PDT
+  open-pull-requests-limit: 99
+  ignore:
+  - dependency-name: html-webpack-plugin
+    versions:
+    - 4.5.0
+    - 4.5.1
+  - dependency-name: eslint
+    versions:
+    - 7.16.0
+    - 7.19.0
+  - dependency-name: "@ledgerhq/hw-transport-webusb"
+    versions:
+    - 5.36.0
+    - 5.41.0
+  - dependency-name: react-intl
+    versions:
+    - 5.10.10
+    - 5.11.0
+  - dependency-name: webpack-cli
+    versions:
+    - 4.3.1
+    - 4.4.0
+  - dependency-name: "@babel/core"
+    versions:
+    - 7.12.10
+  - dependency-name: "@babel/preset-env"
+    versions:
+    - 7.12.11
+  - dependency-name: "@babel/plugin-proposal-decorators"
+    versions:
+    - 7.12.12
+  - dependency-name: webpack-bundle-analyzer
+    versions:
+    - 4.3.0
+  - dependency-name: "@babel/preset-react"
+    versions:
+    - 7.12.10
+  - dependency-name: "@babel/cli"
+    versions:
+    - 7.12.10
+  - dependency-name: webpack-dev-server
+    versions:
+    - 3.11.1
+  - dependency-name: flow-bin
+    versions:
+    - 0.141.0
+  - dependency-name: css-loader
+    versions:
+    - 5.0.1
+  - dependency-name: "@ledgerhq/hw-transport-webauthn"
+    versions:
+    - 5.34.0
+  - dependency-name: "@ledgerhq/hw-transport-u2f"
+    versions:
+    - 5.34.0
+  - dependency-name: sass-loader
+    versions:
+    - 10.1.0
+  - dependency-name: "@babel/preset-flow"
+    versions:
+    - 7.12.1
+  - dependency-name: "@babel/plugin-proposal-class-properties"
+    versions:
+    - 7.12.1
+  - dependency-name: webpack
+    versions:
+    - 4.44.2
+  rebase-strategy: disabled
