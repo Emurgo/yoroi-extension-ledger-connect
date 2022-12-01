@@ -52,7 +52,7 @@
     "@ledgerhq/hw-transport-u2f": "5.36.0-deprecated",
     "@ledgerhq/hw-transport-webauthn": "5.36.0-deprecated",
     "@ledgerhq/hw-transport-webusb": "5.38.0",
-    "@ledgerhq/hw-transport-webhid": "5.51.1",
+    "@ledgerhq/hw-transport-webhid": "6.27.8",
     "babel-polyfill": "6.26.0",
     "bech32": "1.1.4",
     "es6-error": "4.1.1",
